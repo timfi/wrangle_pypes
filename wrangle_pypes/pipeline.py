@@ -65,7 +65,7 @@ class Pipeline(Generic[M]):
         :param data: data to get or create the instance from
         :param match_targets: fields to use for matching the data to the DB, default to None
         """
-        lookup = lookup or getattr(self, "lookup")
+        lookup = lookup or kwargs.get("lookup") or getattr(self, "lookup")
         if lookup is None:
             raise NameError("Need to supply lookup to use `get or create` features.")
 
