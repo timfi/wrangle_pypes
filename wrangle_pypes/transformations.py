@@ -247,7 +247,7 @@ class GetOrCreate(Transformation, Generic[V]):
 
     def apply(self, pipeline: Pipeline, data: Any, *args, **kwargs) -> Tuple[V, bool]:
         return pipeline.get_or_create(
-            self.model, data, self.match_targets, *args, **kwargs
+            self.model, data, *args, match_targets=self.match_targets, **kwargs
         )
 
 
@@ -261,7 +261,7 @@ class GetOrCreateMultiple(Transformation, Generic[V]):
     ) -> List[Tuple[V, bool]]:
         return list(
             pipeline.get_or_create_multiple(
-                self.model, data, self.match_targets, *args, **kwargs
+                self.model, data, *args, match_targets=self.match_targets, **kwargs
             )
         )
 

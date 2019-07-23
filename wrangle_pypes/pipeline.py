@@ -56,7 +56,6 @@ class Pipeline(Generic[M]):
         data: Any,
         *args,
         match_targets: Optional[List[str]] = None,
-        lookup: Optional[Callable[[Type[M], Dict[str, Any]], M]] = None,
         **kwargs,
     ) -> Tuple[M, bool]:
         """Get a single instance matching given match targets or create it.
@@ -65,7 +64,7 @@ class Pipeline(Generic[M]):
         :param data: data to get or create the instance from
         :param match_targets: fields to use for matching the data to the DB, default to None
         """
-        lookup = lookup or kwargs.get("lookup") or getattr(self, "lookup")
+        lookup = kwargs.get("lookup") or getattr(self, "lookup")
         if lookup is None:
             raise NameError("Need to supply lookup to use `get or create` features.")
 
@@ -76,7 +75,6 @@ class Pipeline(Generic[M]):
                 key: self.build_kwarg(model, key, data, *args, **kwargs)
                 for key in match_targets
             }
-
         instance = lookup(model, lookup_kwargs)
         if not instance:
             if not match_targets:
@@ -90,7 +88,6 @@ class Pipeline(Generic[M]):
         data: Sequence[Any],
         *args,
         match_targets: Optional[List[str]] = None,
-        lookup: Optional[Callable[[Type[M], Dict[str, Any]], M]] = None,
         **kwargs,
     ) -> Iterator[Tuple[M, bool]]:
         """Get a instances matching given match targets or create them.
@@ -101,7 +98,7 @@ class Pipeline(Generic[M]):
         """
         return (
             self.get_or_create(
-                model, datapoint, lookup, *args, match_targets=match_targets, **kwargs
+                model, datapoint, *args, match_targets=match_targets, **kwargs
             )
             for datapoint in data
         )
